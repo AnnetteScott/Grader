@@ -78,7 +78,7 @@ class Firebase {
 	}
 
     async updateDataBase(dataBase = this.dataBase, bypass = false){
-        if(this.user === null || (import.meta.env.VITE_DEMO_STATE === 'true' && !bypass)){
+        if(this.user === null || !bypass){
             return;
         }
         await setDoc(doc(this.db, this.fireStorePath), {

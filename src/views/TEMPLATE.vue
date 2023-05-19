@@ -4,27 +4,30 @@ import Firebase from '@/firebase'
 
 export default defineComponent({
 	name: 'TEMPLATE',
-    data() {
+	data() {
 		return {
-			
+
 		};
 	},
-    mounted() {
-        watch(Firebase.dataBase, async () => {
-            //CODE HERE
-        })
-    },
-    methods: {
-       
-    },
-    
+	mounted() {
+		if(Object.keys(Firebase.dataBase).length > 0){
+			// Code here
+		}
+		watch(Firebase.dataBase, async () => {
+			//CODE HERE
+		})
+	},
+	methods: {
+
+	},
+
 })
 
 </script>
 
 <template>
-    <main>
-		
+	<main>
+
 	</main>
 </template>
 
