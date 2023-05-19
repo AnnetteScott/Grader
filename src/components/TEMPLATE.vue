@@ -5,7 +5,7 @@ export default defineComponent({
 	name: 'TEMPLATE',
 	props: {
 
-    },
+	},
 	methods: {
 
 	},
@@ -16,7 +16,7 @@ export default defineComponent({
 <template>
 	<div>
 
-    </div>
+	</div>
 </template>
 
 <style scoped>
