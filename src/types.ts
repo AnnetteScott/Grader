@@ -1,39 +1,46 @@
 export class UserData {
-    semesters = {} as {[year: string]: Semester[]}
-    courses = {} as {[CourseCode: string]: Course}
+    semesters = [] as Semester[]
 }
 
 export class Semester {
     startDate: string
     endDate: string
     name: string
+    courses: Course[]
 
     constructor(startDate: string, endDate: string, name: string){
         this.startDate = startDate
         this.endDate = endDate
         this.name = name
+        this.courses = []
     }
 }
 
 export class Course {
-    assessments: Assessment
+    assessments: Assessment[]
+    courseCode: string
+
+    constructor (courseCode: string) {
+        this.courseCode = courseCode
+        this.assessments = []
+    }
 }
 
 export class Assessment {
-    weight: number
-    result: number | null
-    name: number
-    dueDate: string
+    weight = 0
+    result = null as number | null
+    name = ""
+    dueDate = ""
 
-    constructor(weight: number, name: number, dueDate: string){
+    constructor(weight: number, name: string, dueDate: string, result: number | null){
         this.weight = weight
-        this.result = null
+        this.result = result
         this.name = name
         this.dueDate = dueDate
     }
 }
 
-export function letterGrade (percent): string {
+export function letterGrade (percent: number): string {
     if(percent >= 89.5){
         return 'A+'
     }
