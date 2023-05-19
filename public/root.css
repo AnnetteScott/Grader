@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;400;700;900&family=Oxanium:wght@600&display=swap');
+
+*,
+::before,
+::after {
+    box-sizing: border-box;
+}
+
+html {
+	background-repeat: no-repeat;
+	height: 100%;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+    align-items: flex-end;
+    margin: 0px;
+    height: 100%;
+	color: black;
+	line-height: 1.6;
+	font-family: 'Nunito', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+main {
+	position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+	flex-grow: 1;
+    gap: 1rem;
+    height: 100%;
+    width: 100%;
+	overflow: hidden;
+}
+
+dialog {
+	border: unset;
+	border-radius: 30px;
+    box-shadow:
+        0px -4px 2px 0 #0006 inset,
+        0 3px 10px 0 #0006;
+}
+dialog::backdrop {
+	background-color: #0008;
+}
+dialog > form {
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: flex-start;
+	gap: 1.5rem;
+}
+dialog > form > fieldset {
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: flex-start;
+	gap: 1.5rem;
+	width: 100%;
+	border: unset;
+}
+dialog > form > fieldset.dialog_options {
+	flex-flow: row wrap;
+	justify-content: space-between;
+}
+
+h1 {
+    margin: 0px;
+	padding: 0 0.6ch;
+	font-weight: 900;
+	background-color: white;
+	border-radius: 0.3em;
+}
+
+h2 {
+	margin: 0;
+}
+
+p {
+	margin: 0;
+}

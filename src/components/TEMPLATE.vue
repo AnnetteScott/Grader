@@ -3,26 +3,20 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
 	name: 'TEMPLATE',
-	data() {
-		return {
-			
-		};
-	},
-	mounted() {
-		// CODE HERE
-	},
+	props: {
+
+    },
 	methods: {
-		
+
 	},
-	
 })
 
 </script>
 
 <template>
-	<main>
-		
-	</main>
+	<div>
+
+    </div>
 </template>
 
 <style scoped>

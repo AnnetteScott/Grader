@@ -5,8 +5,19 @@ const router = createRouter({
 	routes: [
 		{
 			path: '/',
-			name: 'home',
-			component: () => import('@/views/TEMPLATE.vue')
+			name: 'DashBoard',
+			component: () => import('@/views/DashBoard.vue'),
+            meta: { requiresAuth: true }
+		},
+		{
+			path: '/login',
+			name: 'Login',
+			component: () => import('@/views/LoginUser.vue'),
+		},
+		{
+			path: '/register',
+			name: 'Register',
+			component: () => import('@/views/TEMPLATE.vue'),
 		}
 	]
 })

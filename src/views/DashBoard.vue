@@ -1,9 +1,13 @@
 <script lang="ts">
 import { defineComponent, watch } from 'vue';
 import Firebase from '@/firebase'
+import ClassTile from '@/components/ClassTile.vue'
 
 export default defineComponent({
-	name: 'TEMPLATE',
+	name: 'DashBoard',
+    components: {
+        ClassTile
+    },
 	data() {
 		return {
             Firebase
@@ -26,8 +30,14 @@ export default defineComponent({
 </script>
 
 <template>
-	<main>
-
+	<main v-if="Object.keys(Firebase.dataBase).length > 0">
+        <section>
+            <button>New Class</button>
+            <button>New Semester</button>
+        </section>
+        <section>
+            <ClassTile course="ENSE602" :percent="10" />
+        </section>
 	</main>
 </template>
 

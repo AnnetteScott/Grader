@@ -8,5 +8,5 @@ import { RouterView } from 'vue-router'
 </template>
 
 <style>
-
+@import url('../public/root.css');
 </style>
