@@ -25,7 +25,7 @@ class Firebase {
 	fireStoreUnsubscribe: Unsubscribe | undefined;
 	db: Firestore; // Firestore database
 	user = ref(null) as Ref<User | null>; //User
-    dataBase = reactive({}); // User data
+    dataBase = reactive({}) as UserData; // User data
 
     fireStorePath = '';
 
@@ -49,7 +49,7 @@ class Firebase {
                 this.fireStoreUnsubscribe = onSnapshot(doc(this.db, this.fireStorePath), async (doc) => {
                     Object.assign(this.dataBase, doc.data())
                     console.log(doc.data())
-                    if(doc.data() == undefined || Object.keys(doc.data()).length == 0){
+                    if(doc.data() == undefined || Object.keys(this.dataBase).length == 0){
                         await this.updateDataBase(new UserData())
                     }
                     console.log(this.dataBase)
@@ -77,9 +77,16 @@ class Firebase {
         if(this.user === null || bypass){
             return;
         }
+
+        dataBase.semesters.forEach((semester) => {
+            semester.courses.forEach((courses) => {
+                courses.assessments.sort((a, b) => a.dueDate > b.dueDate ? 1 : -1)
+            })
+        })
+
         await setDoc(doc(this.db, this.fireStorePath), {
             ...dataBase
-        })
+        });
     }
 }
 
