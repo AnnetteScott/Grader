@@ -75,7 +75,14 @@ export default defineComponent({
 				<button class="icon_button" @click.stop="showCreateAssessment = true"><span class="material-symbols-rounded">add</span></button>
 			</div>
 			<ul class="assessment_list">
-				<li v-for="assessment, index in firebase.dataBase.semesters[semIndex].courses[courseIndex].assessments" :key="index">
+				<li
+                    v-for="assessment, index in firebase.dataBase.semesters[semIndex].courses[courseIndex].assessments" :key="index"
+                    :class="{ 
+                        submitted: assessment.submitted && !assessment.result, 
+                        completed: assessment.submitted && assessment.result,
+                        overdue: new Date().toISOString().split('T')[0] > assessment.dueDate && !assessment.submitted
+                    }"
+                >
 					<p>{{ assessment.name }}: {{ assessment.result ? assessment.result : 0 }}%</p>
 					<button
 						class="icon_button"
@@ -179,6 +186,16 @@ export default defineComponent({
 	padding: 0.5ch 0.8ch;
 	background-color: #f6f6f6;
 	border-radius: 8px;
+}
+
+.assessment_list .completed{
+    background-color: #3ed94e87;
+}
+.assessment_list .submitted{
+    background-color: #efbd1a88;
+}
+.assessment_list .overdue{
+    background-color: #ff483e8a;
 }
 
 .assessment_list li p {

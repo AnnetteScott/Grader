@@ -13,6 +13,7 @@ export default defineComponent({
 			name: "",
 			dueDate: "",
 			hasResult: false,
+			submitted: false,
 		};
 	},
 	props: {
@@ -34,7 +35,8 @@ export default defineComponent({
 				this.weight,
 				this.name,
 				this.dueDate,
-				this.hasResult ? this.result : null
+				this.hasResult ? this.result : null,
+                this.hasResult ? true : this.submitted,
 			);
 
 			if (this.assessmentIndex === -1) {
@@ -53,6 +55,7 @@ export default defineComponent({
 			this.name = ""
 			this.dueDate = ""
 			this.hasResult = false
+			this.submitted = false
 			this.assessmentIndex
 			this.$emit('update:assessmentIndex', -1);
 		}
@@ -67,6 +70,7 @@ export default defineComponent({
 					this.name = ass.name
 					this.dueDate = ass.dueDate
 					this.result = ass.result
+                    this.submitted = ass.submitted
 					if(typeof ass.result === 'number'){
 						this.hasResult = true
 					}
@@ -90,6 +94,10 @@ export default defineComponent({
 				<label for="AssessmentWeight">
 					Weight %
 					<input type="number" id="AssessmentWeight" min="0" max="100" step="0.01" v-model="weight" required>
+				</label>
+				<label for="AssessmentSubmitted">
+					Submitted
+					<input type="checkbox" name="" id="AssessmentSubmitted" v-model="submitted">
 				</label>
 				<label for="AssessmentHasResult">
 					Has Result
