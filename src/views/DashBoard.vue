@@ -6,6 +6,11 @@ import NewCourseDialog from '@/components/NewCourseDialog.vue';
 import firebase from '@/firebase';
 import type { Assessment } from '@/types';
 
+interface ToDoList extends Assessment {
+    courseCode: string
+}
+
+
 export default defineComponent({
 	name: 'DashBoard',
 	components: {
@@ -30,12 +35,15 @@ export default defineComponent({
 		})
 	},
 	computed: {
-		todoAss (): Assessment[] {
-			const todoAsses = [] as Assessment[];
+		todoAss (): ToDoList[] {
+			const todoAsses = [] as ToDoList[];
 			for (const course of firebase.dataBase.semesters[this.currentSem].courses) {
 				for (const ass of course.assessments) {
-					if (typeof ass.result !== 'number') {
-						todoAsses.push(ass);
+					if (typeof ass.result !== 'number' && !ass.submitted) {
+						todoAsses.push({
+                            ...ass,
+                            courseCode: course.courseCode
+                        });
 					}
 				}
 			}
@@ -49,10 +57,15 @@ export default defineComponent({
 <template>
 	<main v-if="Object.keys(firebase.dataBase).length > 0">
 		<section>
-			<button @click="showCourseDialog = true">New Course</button>
-			<button @click="showSemDialog = true">New Semester</button>
+			<button @click="showCourseDialog = true">
+                <span class="material-symbols-rounded">history_edu</span>
+                <span class="text">New Course</span>
+            </button>
+			<button @click="showSemDialog = true">
+                <span class="material-symbols-rounded">calendar_month</span>
+                <span class="text">New Semester</span>
+            </button>
 			<label for="selectedSemester">
-				Semester
 				<select name="selectedSemester" id="selectedSemester" v-model="currentSem">
 					<option
 						v-for="semester, index in firebase.dataBase.semesters"
@@ -74,6 +87,7 @@ export default defineComponent({
 			<ul class="todo_list">
 				<li v-for="ass, index in todoAss" :key="index">
 					<span>{{ new Date(ass.dueDate).toLocaleDateString() }}</span>
+                    <span>{{ ass.courseCode }}</span>
 					<span>{{ ass.name }}</span>
 				</li>
 			</ul>
@@ -105,6 +119,13 @@ section:nth-of-type(1) {
 	gap: 1ch;
 }
 
+section:nth-of-type(1) > button .material-symbols-rounded {
+    display: none;
+}
+section:nth-of-type(1) > button .text {
+    display: inline;
+}
+
 section:nth-of-type(2) {
 	display: flex;
 	flex-flow: column nowrap;
@@ -128,6 +149,12 @@ section:nth-of-type(3) > p {
 	section:nth-of-type(1) {
 		grid-area: 1 / 1 / 2 / 2;
 	}
+    section:nth-of-type(1) > button .material-symbols-rounded {
+        display: inline;
+    }
+    section:nth-of-type(1) > button .text {
+        display: none;
+    }
 }
 
 .todo_list {
@@ -138,5 +165,14 @@ section:nth-of-type(3) > p {
 	padding: 0 0.5ch;
 	background-color: #dadada;
 	border-radius: 0.5em;
+}
+.todo_list li > span:nth-of-type(2) {
+    display: inline-block;
+	margin-right: 0.8ch;
+	padding: 0 0.5ch;
+    height: 22px;
+	background-color: #dadada;
+	border-radius: 0.5em;
+    min-width: 9ch;
 }
 </style>

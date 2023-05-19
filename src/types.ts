@@ -27,16 +27,18 @@ export class Course {
 }
 
 export class Assessment {
-    weight = 0
-    result = null as number | null
-    name = ""
-    dueDate = ""
+    weight: number
+    result: number | null
+    name: string
+    dueDate: string
+    submitted: boolean
 
-    constructor(weight: number, name: string, dueDate: string, result: number | null){
+    constructor(weight: number, name: string, dueDate: string, result: number | null, submitted: boolean){
         this.weight = weight
         this.result = result
         this.name = name
         this.dueDate = dueDate
+        this.submitted = submitted
     }
 }
 
