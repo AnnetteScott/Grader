@@ -10,6 +10,7 @@ export default defineComponent({
 			firebase,
 			weight: 0,
 			result: null as number | null,
+			resultActual: null as number | null,
 			name: "",
 			dueDate: "",
 			hasResult: false,
@@ -30,12 +31,13 @@ export default defineComponent({
 		},
 		save (): void {
 			const assessments = firebase.dataBase.semesters[this.semIndex].courses[this.courseIndex].assessments;
+			const result = this.result ? this.result : this.resultActual ? this.resultActual / this.weight * 100 : null
 
 			const assessmentData = new Assessment(
 				this.weight,
 				this.name,
 				this.dueDate,
-				this.hasResult ? this.result : null,
+				this.hasResult ? result : null,
                 this.hasResult ? true : this.submitted,
 			);
 
@@ -52,6 +54,7 @@ export default defineComponent({
 		clear(){
 			this.weight = 0
 			this.result = null
+			this.resultActual = null
 			this.name = ""
 			this.dueDate = ""
 			this.hasResult = false
@@ -105,7 +108,11 @@ export default defineComponent({
 				</label>
 				<label for="AssessmentResult" v-if="hasResult">
 					Result %
-					<input type="number" id="AssessmentResult" min="0" max="100" step="0.01" v-model="result" required>
+					<input type="number" id="AssessmentResult" min="0" max="100" step="0.01" v-model="result">
+				</label>
+				<label for="AssessmentResult" v-if="hasResult">
+					Result
+					<input type="number" id="AssessmentResult" min="0" max="100" step="0.01" v-model="resultActual">
 				</label>
 				<label for="AssessmentDate">
 					Due Date
