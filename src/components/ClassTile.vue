@@ -46,8 +46,8 @@ export default defineComponent({
 				amount += (assessment.result * assessment.weight) / 100
 				total += assessment.weight
 			});
-			console.log(amount / total * 100)
-			return amount / total * 100;
+
+			return isNaN(amount / total) ? 0 : amount / total * 100;
 		}
 	},
 	methods: {
