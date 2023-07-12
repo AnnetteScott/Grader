@@ -26,6 +26,7 @@ class Firebase {
 	db: Firestore; // Firestore database
 	user = ref(null) as Ref<User | null>; //User
     dataBase = reactive({}) as UserData; // User data
+	colours = ['#65EBF0', '#D87AEF', '#4DEE53', '#EEA44D']
 
     fireStorePath = '';
 

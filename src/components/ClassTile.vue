@@ -34,7 +34,7 @@ export default defineComponent({
 				}
 				amount += (assessment.result * assessment.weight) / 100;
 			});
-			return amount;
+			return parseFloat(amount.toFixed(2));
 		},
 		percent2() {
 			let amount = 0;
@@ -46,8 +46,8 @@ export default defineComponent({
 				amount += (assessment.result * assessment.weight) / 100
 				total += assessment.weight
 			});
-
-			return isNaN(amount / total) ? 0 : amount / total * 100;
+			const output = isNaN(amount / total) ? 0 : amount / total * 100;
+			return parseFloat(output.toFixed(2));
 		}
 	},
 	methods: {
@@ -65,7 +65,7 @@ export default defineComponent({
 	<div class="course_tile" :class="{ showAssessments }" @click="showAssessments = !showAssessments">
 		<div class="top_section">
 			<h2>{{ firebase.dataBase.semesters[semIndex].courses[courseIndex].courseCode }}</h2>
-			<p>
+			<p :style="`background-color: ${firebase.colours[courseIndex]}`">
 				<span>{{ letterGrade(percent) }}</span>
 				<span>{{ letterGrade(percent2) }}</span>
 				<span>{{ percent }}%</span>
@@ -140,7 +140,6 @@ export default defineComponent({
 	height: 100%;
 	font-size: small;
 	text-align: center;
-	background-color: #eee;
 }
 .top_section p span:nth-of-type(1) {
 	grid-area: 1 / 1 / 3 / 2;
@@ -150,7 +149,6 @@ export default defineComponent({
 	justify-content: flex-end;
 	align-items: center;
 	font-size: x-large;
-	background-color: #eee;
 }
 .top_section p span:nth-of-type(1)::after {
 	content: '';
@@ -159,7 +157,7 @@ export default defineComponent({
 	display: block;
 	width: 1px;
 	height: 1em;
-	background-color: #bbb;
+	background-color: #000;
 }
 
 .bottom_section {

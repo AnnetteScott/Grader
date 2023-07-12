@@ -7,9 +7,9 @@ import firebase from '@/firebase';
 import type { Assessment } from '@/types';
 
 interface ToDoList extends Assessment {
-    courseCode: string
+    courseCode: string,
+	colour: string
 }
-
 
 export default defineComponent({
 	name: 'DashBoard',
@@ -41,15 +41,18 @@ export default defineComponent({
 	computed: {
 		todoAss (): ToDoList[] {
 			const todoAsses = [] as ToDoList[];
+			let index = 0;
 			for (const course of firebase.dataBase.semesters[this.currentSem].courses) {
 				for (const ass of course.assessments) {
 					if (typeof ass.result !== 'number' && !ass.submitted) {
 						todoAsses.push({
                             ...ass,
-                            courseCode: course.courseCode
+                            courseCode: course.courseCode,
+							colour: firebase.colours[index]
                         });
 					}
 				}
+				index++;
 			}
 			todoAsses.sort((a, b) => a.dueDate > b.dueDate ? 1 : -1);
 			return todoAsses;
@@ -91,7 +94,7 @@ export default defineComponent({
 			<ul class="todo_list">
 				<li v-for="ass, index in todoAss" :key="index">
 					<span>{{ new Date(ass.dueDate).toLocaleDateString() }}</span>
-                    <span>{{ ass.courseCode }}</span>
+                    <span :style="`background-color: ${ass.colour}`">{{ ass.courseCode }}</span>
 					<span>{{ ass.name }}</span>
 				</li>
 			</ul>
