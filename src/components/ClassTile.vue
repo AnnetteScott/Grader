@@ -38,15 +38,16 @@ export default defineComponent({
 		},
 		percent2() {
 			let amount = 0;
-			let index = 0;
+			let total = 0;
 			firebase.dataBase.semesters[this.semIndex].courses[this.courseIndex].assessments.forEach((assessment) => {
 				if (assessment.result == null) {
 					return;
 				}
-				amount += assessment.result
-				index += 1
+				amount += (assessment.result * assessment.weight) / 100
+				total += assessment.weight
 			});
-			return amount / index;
+			console.log(amount / total * 100)
+			return amount / total * 100;
 		}
 	},
 	methods: {
