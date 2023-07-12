@@ -23,15 +23,19 @@ export default defineComponent({
 			firebase,
 			showSemDialog: false,
 			showCourseDialog: false,
-			currentSem: 0
+			currentSem: 0,
+			loaded: false
 		};
 	},
 	mounted() {
 		if(Object.keys(firebase.dataBase).length > 0){
-			// Code here
+			this.currentSem = firebase.dataBase.semesters.length - 1;
 		}
 		watch(firebase.dataBase, async () => {
-			//CODE HERE
+			if(!this.loaded){
+				this.currentSem = firebase.dataBase.semesters.length - 1;
+				this.loaded = true;
+			}
 		})
 	},
 	computed: {
