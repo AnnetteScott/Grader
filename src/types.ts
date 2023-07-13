@@ -7,10 +7,12 @@ export class Semester {
     endDate: string
     name: string
     courses: Course[]
+	breakDate: string
 
-    constructor(startDate: string, endDate: string, name: string){
+    constructor(startDate: string, endDate: string, name: string, breakDate: string){
         this.startDate = startDate
         this.endDate = endDate
+        this.breakDate = breakDate
         this.name = name
         this.courses = []
     }

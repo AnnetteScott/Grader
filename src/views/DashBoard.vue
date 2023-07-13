@@ -24,37 +24,89 @@ export default defineComponent({
 			showSemDialog: false,
 			showCourseDialog: false,
 			currentSem: 0,
+			breakNum: -2,
 			loaded: false
 		};
 	},
 	mounted() {
 		if(Object.keys(firebase.dataBase).length > 0){
 			this.currentSem = firebase.dataBase.semesters.length - 1;
+			this.load()
 		}
 		watch(firebase.dataBase, async () => {
 			if(!this.loaded){
 				this.currentSem = firebase.dataBase.semesters.length - 1;
 				this.loaded = true;
 			}
+			this.load()
 		})
 	},
+	methods: {
+		load(){
+			this.breakNum = -2;
+			this.$nextTick(() => {
+				this.breakNum = this.weekNum(new Date(firebase.dataBase.semesters[this.currentSem].breakDate)) as number
+			})
+		},
+		weekNum(date: Date): number | string{
+			const startDate = new Date(firebase.dataBase.semesters[this.currentSem].startDate);
+			const endDate = new Date(firebase.dataBase.semesters[this.currentSem].startDate);
+			endDate.setDate(endDate.getDate() + 6);
+			startDate.setHours(1);
+			endDate.setHours(23);
+			for(let i = 1; i < 18; i++){
+				if(date.getTime() >= startDate.getTime() && date.getTime() <= endDate.getTime()){
+					if(this.breakNum === -2){
+						return i;
+					}
+					const output = i === this.breakNum ? 'Break 1' : i === this.breakNum + 1 ? 'Break 2' : i < this.breakNum ? 'Week ' + i : i > this.breakNum && i < 15 ? 'Week ' + (i - 2) : 'Exam ' + ((i - 2) % 13 + 1)
+					return output;
+				}
+				startDate.setDate(startDate.getDate() + 7);
+				endDate.setDate(endDate.getDate() + 7);
+				startDate.setHours(1);
+				endDate.setHours(23);
+			}
+			return 1;
+		}
+	},
 	computed: {
-		todoAss (): ToDoList[] {
-			const todoAsses = [] as ToDoList[];
+		todoAss (): {[week: string]: ToDoList[]} {
+			const todoAsses:{[week: string]: ToDoList[]} = {};
+			for(let i = 1; i < 18; i++){
+				if(i === this.breakNum){
+					todoAsses['Break 1'] = []
+				}
+				else if(i === this.breakNum + 1){
+					todoAsses['Break 2'] = []
+				}
+				else if(i < this.breakNum){
+					todoAsses['Week ' + i] = []
+				}
+				else if(i > this.breakNum && i < 15){
+					todoAsses['Week ' + (i - 2)] = []
+				}
+				else{
+					todoAsses['Exam ' + ((i - 2) % 13 + 1)] = []
+				}
+			}
+
 			let index = 0;
 			for (const course of firebase.dataBase.semesters[this.currentSem].courses) {
 				for (const ass of course.assessments) {
 					if (typeof ass.result !== 'number' && !ass.submitted) {
-						todoAsses.push({
+						const weekNum = this.weekNum(new Date(ass.dueDate))
+						todoAsses[weekNum].push({
                             ...ass,
                             courseCode: course.courseCode,
 							colour: firebase.colours[index]
                         });
+						todoAsses[weekNum].sort((a, b) => a.dueDate > b.dueDate ? 1 : -1);
 					}
 				}
 				index++;
 			}
-			todoAsses.sort((a, b) => a.dueDate > b.dueDate ? 1 : -1);
+			
 			return todoAsses;
 		}
 	}
@@ -73,7 +125,7 @@ export default defineComponent({
                 <span class="text">New Semester</span>
             </button>
 			<label for="selectedSemester">
-				<select name="selectedSemester" id="selectedSemester" v-model="currentSem">
+				<select name="selectedSemester" id="selectedSemester" v-model="currentSem" @change="load()">
 					<option
 						v-for="semester, index in firebase.dataBase.semesters"
 						:key="index"
@@ -89,15 +141,18 @@ export default defineComponent({
 				:semIndex="currentSem"
 			/>
 		</section>
-		<section>
+		<section v-if="breakNum !== -2">
 			<p>Todo</p>
-			<ul class="todo_list">
-				<li v-for="ass, index in todoAss" :key="index">
-					<span>{{ new Date(ass.dueDate).toLocaleDateString() }}</span>
-                    <span :style="`background-color: ${ass.colour}`">{{ ass.courseCode }}</span>
-					<span>{{ ass.name }}</span>
-				</li>
-			</ul>
+			<template v-for="list, week in todoAss" :key="week">
+				<ul class="todo_list">
+					<p><b>{{ week }}</b></p>
+					<li v-for="ass, index in list" :key="index">
+						<span>{{ new Date(ass.dueDate).toLocaleDateString() }}</span>
+						<span :style="`background-color: ${ass.colour}`">{{ ass.courseCode }}</span>
+						<span>{{ ass.name }}</span>
+					</li>
+				</ul>
+			</template>
 		</section>
 		<br>
 		<NewSemesterDialog v-model="showSemDialog" />
@@ -112,7 +167,7 @@ main {
 	grid-template-rows: auto 1fr;
 	justify-content: flex-start;
 	align-items: flex-start;
-	max-width: 800px;
+	max-width: 900px;
 	margin: 0 auto;
 	padding: 1ch 1ch;
 }

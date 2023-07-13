@@ -9,7 +9,8 @@ export default defineComponent({
 		return {
 			name: '',
 			startDate: '',
-			endDate: ''
+			endDate: '',
+			breakDate: ''
 		};
 	},
 	props: {
@@ -21,11 +22,12 @@ export default defineComponent({
 			this.$emit('update:modelValue', false);
 		},
 		save (): void {
-			firebase.dataBase.semesters.push({...new Semester(this.startDate, this.endDate, this.name)});
+			firebase.dataBase.semesters.push({...new Semester(this.startDate, this.endDate, this.name, this.breakDate)});
 			void firebase.updateDataBase();
 			this.name = '';
 			this.startDate = '';
 			this.endDate = '';
+			this.breakDate = '';
 			this.$emit('update:modelValue', false);
 		}
 	},
@@ -43,24 +45,28 @@ export default defineComponent({
 
 <template>
 	<dialog ref="dialog">
-		<form @submit.prevent>
+		<form @submit.prevent="save()">
 			<fieldset>
 				<label for="newSemesterName">
 					Name
-					<input type="text" id="newSemesterName" v-model="name">
+					<input type="text" id="newSemesterName" v-model="name" required>
 				</label>
 				<label for="newSemesterStartDate">
 					Start Date
-					<input type="date" id="newSemesterStartDate" v-model="startDate">
+					<input type="date" id="newSemesterStartDate" v-model="startDate" required>
 				</label>
 				<label for="newSemesterEndDate">
 					End Date
-					<input type="date" id="newSemesterEndDate" v-model="endDate">
+					<input type="date" id="newSemesterEndDate" v-model="endDate" required>
+				</label>
+				<label for="newSemesterEndDate">
+					Break Date
+					<input type="date" id="newSemesterEndDate" v-model="breakDate" required>
 				</label>
 			</fieldset>
 			<fieldset>
 				<button @click="cancel()">Cancel</button>
-				<button @click="save()">Create</button>
+				<button type="submit">Save</button>
 			</fieldset>
 		</form>
 	</dialog>

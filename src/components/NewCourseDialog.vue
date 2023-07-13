@@ -42,7 +42,7 @@ export default defineComponent({
 
 <template>
 	<dialog ref="dialog">
-		<form @submit.prevent>
+		<form @submit.prevent="save()">
 			<fieldset>
 				<label for="newCourseName">
 					Course Code
@@ -57,7 +57,7 @@ export default defineComponent({
 			</fieldset>
 			<fieldset>
 				<button @click="cancel()">Cancel</button>
-				<button @click="save()">Create</button>
+				<button type="submit">Save</button>
 			</fieldset>
 		</form>
 	</dialog>
