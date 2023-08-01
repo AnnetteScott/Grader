@@ -106,7 +106,16 @@ export default defineComponent({
 				}
 				index++;
 			}
-			
+
+			const currentWeek = this.weekNum(new Date())
+			const currentIndex = Object.keys(todoAsses).indexOf(currentWeek.toString());
+
+			for(const [index, [week, arr]] of Object.entries(Object.entries(todoAsses))){
+				if(parseInt(index) < currentIndex && arr.length === 0){
+					delete todoAsses[week];
+				}
+			}
+
 			return todoAsses;
 		}
 	}
