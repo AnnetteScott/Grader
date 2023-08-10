@@ -47,6 +47,16 @@ export default defineComponent({
 				assessments[this.assessmentIndex] = {...assessmentData};
 			}
 
+			assessments.sort((a, b) => {
+				if (a.dueDate < b.dueDate) {
+					return -1;
+				} else if (a.dueDate > b.dueDate) {
+					return 1;
+				} else {
+					return b.name.localeCompare(a.name);
+				}
+			});
+
 			void firebase.updateDataBase();
 			this.clear()
 			this.$emit('update:modelValue', false);

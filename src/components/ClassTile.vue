@@ -84,7 +84,7 @@ export default defineComponent({
                         overdue: new Date().toISOString().split('T')[0] > assessment.dueDate && !assessment.submitted
                     }"
                 >
-					<p>{{ assessment.name }}: {{ assessment.result ? assessment.result : 0 }}%</p>
+					<p>{{ assessment.name }}: {{ assessment.weight }}%: {{ assessment.result ? assessment.result : 0 }}%</p>
 					<button
 						class="icon_button"
 						@click.stop="assessmentIndex = index, showCreateAssessment = true">

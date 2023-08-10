@@ -7,7 +7,7 @@ import firebase from '@/firebase';
 import type { Assessment } from '@/types';
 
 interface ToDoList extends Assessment {
-    courseCode: string,
+	courseCode: string,
 	colour: string
 }
 
@@ -97,11 +97,19 @@ export default defineComponent({
 					if (typeof ass.result !== 'number' && !ass.submitted) {
 						const weekNum = this.weekNum(new Date(ass.dueDate))
 						todoAsses[weekNum].push({
-                            ...ass,
-                            courseCode: course.courseCode,
+							...ass,
+							courseCode: course.courseCode,
 							colour: firebase.colours[index]
-                        });
-						todoAsses[weekNum].sort((a, b) => a.dueDate > b.dueDate ? 1 : -1);
+						});
+						todoAsses[weekNum].sort((a, b) => {
+							if (a.dueDate < b.dueDate) {
+								return -1;
+							} else if (a.dueDate > b.dueDate) {
+								return 1;
+							} else {
+								return a.name.localeCompare(b.name);
+							}
+						});
 					}
 				}
 				index++;
@@ -116,6 +124,7 @@ export default defineComponent({
 				}
 			}
 
+			console.log(todoAsses)
 			return todoAsses;
 		}
 	}
@@ -126,13 +135,13 @@ export default defineComponent({
 	<main v-if="Object.keys(firebase.dataBase).length > 0">
 		<section>
 			<button @click="showCourseDialog = true">
-                <span class="material-symbols-rounded">history_edu</span>
-                <span class="text">New Course</span>
-            </button>
+				<span class="material-symbols-rounded">history_edu</span>
+				<span class="text">New Course</span>
+			</button>
 			<button @click="showSemDialog = true">
-                <span class="material-symbols-rounded">calendar_month</span>
-                <span class="text">New Semester</span>
-            </button>
+				<span class="material-symbols-rounded">calendar_month</span>
+				<span class="text">New Semester</span>
+			</button>
 			<label for="selectedSemester">
 				<select name="selectedSemester" id="selectedSemester" v-model="currentSem" @change="load()">
 					<option
@@ -144,9 +153,9 @@ export default defineComponent({
 			</label>
 		</section>
 		<section>
-			<ClassTile 
+			<ClassTile
 				v-for="course, index in firebase.dataBase.semesters[currentSem].courses" :key="index"
-				:courseIndex="index" 
+				:courseIndex="index"
 				:semIndex="currentSem"
 			/>
 		</section>
@@ -157,6 +166,7 @@ export default defineComponent({
 					<p><b>{{ week }}</b></p>
 					<li v-for="ass, index in list" :key="index">
 						<span>{{ new Date(ass.dueDate).toLocaleDateString() }}</span>
+						<span>{{ ass.weight.toString().padStart(2, " ") }}%</span>
 						<span :style="`background-color: ${ass.colour}`">{{ ass.courseCode }}</span>
 						<span>{{ ass.name }}</span>
 					</li>
@@ -191,10 +201,10 @@ section:nth-of-type(1) {
 }
 
 section:nth-of-type(1) > button .material-symbols-rounded {
-    display: none;
+	display: none;
 }
 section:nth-of-type(1) > button .text {
-    display: inline;
+	display: inline;
 }
 
 section:nth-of-type(2) {
@@ -220,12 +230,12 @@ section:nth-of-type(3) > p {
 	section:nth-of-type(1) {
 		grid-area: 1 / 1 / 2 / 2;
 	}
-    section:nth-of-type(1) > button .material-symbols-rounded {
-        display: inline;
-    }
-    section:nth-of-type(1) > button .text {
-        display: none;
-    }
+	section:nth-of-type(1) > button .material-symbols-rounded {
+		display: inline;
+	}
+	section:nth-of-type(1) > button .text {
+		display: none;
+	}
 }
 
 .todo_list {
@@ -238,12 +248,15 @@ section:nth-of-type(3) > p {
 	border-radius: 0.5em;
 }
 .todo_list li > span:nth-of-type(2) {
-    display: inline-block;
+	margin-right: 0.5ch;
+}
+.todo_list li > span:nth-of-type(3) {
+	display: inline-block;
 	margin-right: 0.8ch;
 	padding: 0 0.5ch;
-    height: 22px;
+	height: 22px;
 	background-color: #dadada;
 	border-radius: 0.5em;
-    min-width: 9ch;
+	min-width: 9ch;
 }
 </style>
