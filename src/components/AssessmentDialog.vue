@@ -47,7 +47,7 @@ export default defineComponent({
 				assessments[this.assessmentIndex] = {...assessmentData};
 			}
 
-			assessments.sort((a, b) => {
+			firebase.dataBase.semesters[this.semIndex].courses[this.courseIndex].assessments.sort((a, b) => {
 				if (a.dueDate < b.dueDate) {
 					return -1;
 				} else if (a.dueDate > b.dueDate) {
