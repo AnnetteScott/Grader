@@ -47,15 +47,18 @@ export default defineComponent({
 				assessments[this.assessmentIndex] = {...assessmentData};
 			}
 
-			firebase.dataBase.semesters[this.semIndex].courses[this.courseIndex].assessments.sort((a, b) => {
-				if (a.dueDate < b.dueDate) {
-					return -1;
-				} else if (a.dueDate > b.dueDate) {
-					return 1;
-				} else {
-					return b.name.localeCompare(a.name);
-				}
-			});
+
+			for(const course of firebase.dataBase.semesters[this.semIndex].courses){
+				course.assessments.sort((a, b) => {
+					if (a.dueDate < b.dueDate) {
+						return -1;
+					} else if (a.dueDate > b.dueDate) {
+						return 1;
+					} else {
+						return b.name.localeCompare(a.name);
+					}
+				});
+			}
 
 			void firebase.updateDataBase();
 			this.clear()
