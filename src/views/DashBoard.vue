@@ -23,32 +23,44 @@ export default defineComponent({
 			firebase,
 			showSemDialog: false,
 			showCourseDialog: false,
-			currentSem: 0,
+			currentSem: -1,
 			breakNum: -2,
 			loaded: false
 		};
 	},
 	mounted() {
 		if(Object.keys(firebase.dataBase).length > 0){
-			this.currentSem = firebase.dataBase.semesters.length - 1;
+			this.currentSemester()
 			this.load()
 		}
 		watch(firebase.dataBase, async () => {
 			if(!this.loaded){
-				this.currentSem = firebase.dataBase.semesters.length - 1;
+				this.currentSemester()
 				this.loaded = true;
 			}
 			this.load()
 		})
 	},
 	methods: {
+		currentSemester(){
+			const today = new Date();
+			let index = 0;
+			for(const sem of firebase.dataBase.semesters){
+				const date = new Date(sem.endDate);
+				if(today.getTime() < date.getTime()){
+					this.currentSem = index;
+					break;
+				}
+				index++;
+			}
+		},
 		load(){
 			this.breakNum = -2;
 			this.$nextTick(() => {
 				this.breakNum = this.weekNum(new Date(firebase.dataBase.semesters[this.currentSem].breakDate)) as number
 			})
 		},
-		weekNum(date: Date): number | string{
+		weekNum(date: Date): number | string | undefined{
 			const startDate = new Date(firebase.dataBase.semesters[this.currentSem].startDate);
 			const endDate = new Date(firebase.dataBase.semesters[this.currentSem].startDate);
 			endDate.setDate(endDate.getDate() + 6);
@@ -67,7 +79,7 @@ export default defineComponent({
 				startDate.setHours(1);
 				endDate.setHours(23);
 			}
-			return 1;
+			return undefined;
 		}
 	},
 	computed: {
@@ -95,7 +107,8 @@ export default defineComponent({
 			for (const course of firebase.dataBase.semesters[this.currentSem].courses) {
 				for (const ass of course.assessments) {
 					if (typeof ass.result !== 'number' && !ass.submitted) {
-						const weekNum = this.weekNum(new Date(ass.dueDate))
+						const weekNum = this.weekNum(new Date(ass.dueDate)) ?? 'Exam 3'
+						
 						todoAsses[weekNum].push({
 							...ass,
 							courseCode: course.courseCode,
@@ -115,7 +128,7 @@ export default defineComponent({
 				index++;
 			}
 
-			const currentWeek = this.weekNum(new Date())
+			const currentWeek = this.weekNum(new Date()) ?? 'Week 1'
 			const currentIndex = Object.keys(todoAsses).indexOf(currentWeek.toString());
 
 			for(const [index, [week, arr]] of Object.entries(Object.entries(todoAsses))){
@@ -123,8 +136,6 @@ export default defineComponent({
 					delete todoAsses[week];
 				}
 			}
-
-			console.log(todoAsses)
 			return todoAsses;
 		}
 	}
