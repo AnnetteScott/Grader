@@ -107,7 +107,7 @@ export default defineComponent({
 			for (const course of firebase.dataBase.semesters[this.currentSem].courses) {
 				for (const ass of course.assessments) {
 					if (typeof ass.result !== 'number' && !ass.submitted) {
-						const weekNum = this.weekNum(new Date(ass.dueDate)) ?? 'Exam 3'
+						const weekNum = this.weekNum(new Date(ass.dueDate)) ?? 'Exam 3';
 						
 						todoAsses[weekNum].push({
 							...ass,
@@ -128,7 +128,7 @@ export default defineComponent({
 				index++;
 			}
 
-			const currentWeek = this.weekNum(new Date()) ?? 'Week 1'
+			const currentWeek = this.weekNum(new Date()) ?? 'Week 1';
 			const currentIndex = Object.keys(todoAsses).indexOf(currentWeek.toString());
 
 			for(const [index, [week, arr]] of Object.entries(Object.entries(todoAsses))){
