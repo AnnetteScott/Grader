@@ -116,7 +116,7 @@ export default defineComponent({
 		<select v-model="grade">
 			<option value="A+">A+</option>
 			<option value="A">A</option>
-			<option value="A-">-+</option>
+			<option value="A-">A-</option>
 			<option value="B+">B+</option>
 			<option value="B">B</option>
 			<option value="B-">B-</option>
@@ -128,7 +128,7 @@ export default defineComponent({
 		<p v-for="[name, val] of Object.entries(info)"
 			:key="name"
 		>
-			{{ name }}: {{ val }}%
+			{{ name }}: {{ val }}
 		</p>
 		<fieldset>
 			<button @click="cancel()">Cancel</button>
