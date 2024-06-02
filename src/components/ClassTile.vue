@@ -3,6 +3,7 @@ import { defineComponent } from 'vue';
 import { letterGrade } from '@/types'
 import firebase from '@/firebase';
 import AssessmentDialog from './AssessmentDialog.vue';
+import ToPass from './ToPass.vue';
 
 export default defineComponent({
 	name: "ClassTile",
@@ -12,6 +13,7 @@ export default defineComponent({
 			firebase,
 			showAssessments: false,
 			showCreateAssessment: false,
+			showInfoAssessment: false,
 			assessmentIndex: -1
 		};
 	},
@@ -56,7 +58,7 @@ export default defineComponent({
 			firebase.updateDataBase();
 		}
 	},
-	components: { AssessmentDialog }
+	components: { AssessmentDialog, ToPass }
 })
 
 </script>
@@ -72,8 +74,9 @@ export default defineComponent({
 			</p>
 		</div>
 		<div class="bottom_section">
-			<div>
+			<div style="display: flex; gap: 2rem">
 				<button class="icon_button" @click.stop="showCreateAssessment = true"><span class="material-symbols-rounded">add</span></button>
+				<button class="icon_button" @click.stop="showInfoAssessment = true"><span class="material-symbols-rounded">info</span></button>
 			</div>
 			<ul class="assessment_list">
 				<li
@@ -100,6 +103,7 @@ export default defineComponent({
 		</div>
 	</div>
 	<AssessmentDialog :semIndex="semIndex" :courseIndex="courseIndex" v-model:assessmentIndex="assessmentIndex" v-model="showCreateAssessment"/>
+	<ToPass :semIndex="semIndex" :courseIndex="courseIndex" v-model="showInfoAssessment"/>
 </template>
 
 <style scoped>
