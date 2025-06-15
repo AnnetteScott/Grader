@@ -18,7 +18,7 @@ export default defineComponent({
 	data(){
 		return {
 			grade: 'A+' as 'A+' | 'A' | 'A-' | 'B+' | 'B' | 'B-' | 'C+' | 'C' | 'C-' |'D',
-			info: {} as {[key: string]: number}
+			info: {} as {[key: string]: string}
 		}
 	},
 	methods: {
@@ -43,17 +43,17 @@ export default defineComponent({
 			if(left <= 0){
 				firebase.dataBase.semesters[this.semIndex].courses[this.courseIndex].assessments.forEach((assessment) => {
 					if (assessment.result == null) {
-						this.info[assessment.name] = 0;
+						this.info[assessment.name] = "";
 					}
 				});
 				return;
 			}
-
+			
 			const percentNeeded = left / max;
 			console.log(max, left)
 			firebase.dataBase.semesters[this.semIndex].courses[this.courseIndex].assessments.forEach((assessment) => {
 				if (assessment.result == null) {
-					this.info[assessment.name] = parseFloat((percentNeeded * assessment.weight).toFixed(2));
+					this.info[assessment.name] = `${parseFloat((percentNeeded * assessment.weight).toFixed(2))} / ${ (percentNeeded * 100).toFixed(2)}%`;
 				}
 			});
 		},
