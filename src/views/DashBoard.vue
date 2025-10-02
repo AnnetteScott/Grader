@@ -80,6 +80,12 @@ export default defineComponent({
 				endDate.setHours(23);
 			}
 			return undefined;
+		},
+		daysTill(date: Date) {
+			const today = new Date()
+			const oneDay = 24 * 60 * 60 * 1000;
+
+			return Math.round(Math.abs((today.getTime() - date.getTime()) / oneDay));
 		}
 	},
 	computed: {
@@ -176,7 +182,7 @@ export default defineComponent({
 				<ul class="todo_list">
 					<p><b>{{ week }}</b></p>
 					<li v-for="ass, index in list" :key="index">
-						<span>{{ new Date(ass.dueDate).toLocaleDateString() }}</span>
+						<span>{{ new Date(ass.dueDate).toLocaleDateString() }} ({{ daysTill(new Date(ass.dueDate)) }} days)</span>
 						<span>{{ ass.weight.toString().padStart(2, " ") }}%</span>
 						<span :style="`background-color: ${ass.colour}`">{{ ass.courseCode }}</span>
 						<span>{{ ass.name }}</span>
@@ -269,5 +275,11 @@ section:nth-of-type(3) > p {
 	background-color: #dadada;
 	border-radius: 0.5em;
 	min-width: 9ch;
+}
+
+.todo_list li {
+	border-bottom: 1px solid grey;
+	margin-bottom: 6px;
+	padding-bottom: 6px;
 }
 </style>
