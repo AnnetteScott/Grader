@@ -52,7 +52,6 @@ class Firebase {
 					if(doc.data() == undefined || Object.keys(this.dataBase).length == 0){
 						await this.updateDataBase(new UserData())
 					}
-					console.log(this.dataBase)
 				});
 			}else{
 				this.fireStoreUnsubscribe?.();

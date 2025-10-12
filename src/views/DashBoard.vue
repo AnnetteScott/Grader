@@ -4,7 +4,8 @@ import ClassTile from '@/components/ClassTile.vue';
 import NewSemesterDialog from '@/components/NewSemesterDialog.vue';
 import NewCourseDialog from '@/components/NewCourseDialog.vue';
 import firebase from '@/firebase';
-import type { Assessment } from '@/types';
+import type { Assessment, Course } from '@/types';
+import { Grades, gradeWorth, letterGrade } from '@/types'
 
 interface ToDoList extends Assessment {
 	courseCode: string,
@@ -58,6 +59,7 @@ export default defineComponent({
 			this.breakNum = -2;
 			this.$nextTick(() => {
 				this.breakNum = this.weekNum(new Date(firebase.dataBase.semesters[this.currentSem].breakDate)) as number
+				this.gpa();
 			})
 		},
 		weekNum(date: Date): number | string | undefined{
@@ -86,7 +88,64 @@ export default defineComponent({
 			const oneDay = 24 * 60 * 60 * 1000;
 
 			return Math.round(Math.abs((today.getTime() - date.getTime()) / oneDay));
+		},
+		gpa() {
+			let classes = ['ENSE891', 'ENSE892', 'ENSE810', 'COMP826', 'COMP712', 'COMP700'];
+			let grades = new Grades();
+			let totals = {'6': 0, '7': 0, '8': 0} as {[key: string]: number}
+			let classesTotal = {'6': 0, '7': 0, '8': 0} as {[key: string]: number}
+			
+			for(const sem of firebase.dataBase.semesters){
+				for(const course of sem.courses){
+					let percent = this.percent(course);
+					let grade = letterGrade(percent)
+					let level = course.courseCode.charAt(4);
+					if(level == '5'){
+						continue;
+					}
+					grades.grades[level][grade]++
+					classesTotal[level]++;
+				}
+			}
+
+			for(const [level, data] of Object.entries(grades.grades)){
+				for(const [grade, amount] of Object.entries(data)){
+					totals[level] += gradeWorth(grade) * amount;
+				}
+			}
+
+			totals['7'] *= 2;
+			totals['8'] *= 3;
+
+			const score = Object.values(totals).reduce((acc, val) => acc + val, 0);
+			const maxScore = classesTotal['6'] * 9 + classesTotal['7'] * 9 * 2 + classesTotal['8'] * 9 * 3;
+
+			const gpa = score/maxScore * 9;
+			if(gpa < 4.50){
+				return `No Honours ${gpa.toFixed(2)}`
+			}
+			else if(gpa < 5.50){
+				return `Second Division ${gpa.toFixed(2)}`
+			}
+			else if(gpa < 6.50){
+				return `First Division ${gpa.toFixed(2)}`
+			}
+			else {
+				return `First Class ${gpa.toFixed(2)}`
+			}
+
+		},
+		percent(course: Course) {
+			let amount = 0;
+			course.assessments.forEach((assessment) => {
+				if (assessment.result == null) {
+					return;
+				}
+				amount += (assessment.result * assessment.weight) / 100;
+			});
+			return parseFloat(amount.toFixed(2));
 		}
+
 	},
 	computed: {
 		todoAss (): {[week: string]: ToDoList[]} {
@@ -168,6 +227,7 @@ export default defineComponent({
 					>{{ new Date(semester.startDate).getFullYear() }} - {{ semester.name }}</option>
 				</select>
 			</label>
+			{{ gpa() }}
 		</section>
 		<section>
 			<ClassTile
