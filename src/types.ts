@@ -44,7 +44,7 @@ export class Assessment {
     }
 }
 
-type Grade = 'A+' | 'A' | 'A-' | 'B+' | 'B' | 'B-' | 'C+' | 'C' | 'C-'| 'D'
+export type Grade = 'A+' | 'A' | 'A-' | 'B+' | 'B' | 'B-' | 'C+' | 'C' | 'C-'| 'D'
 
 export function letterGrade (percent: number): Grade {
     if(percent >= 89.5){

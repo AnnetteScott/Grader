@@ -4,7 +4,7 @@ import ClassTile from '@/components/ClassTile.vue';
 import NewSemesterDialog from '@/components/NewSemesterDialog.vue';
 import NewCourseDialog from '@/components/NewCourseDialog.vue';
 import firebase from '@/firebase';
-import type { Assessment, Course } from '@/types';
+import type { Assessment, Course, Grade } from '@/types';
 import { Grades, gradeWorth, letterGrade } from '@/types'
 
 interface ToDoList extends Assessment {
@@ -110,7 +110,7 @@ export default defineComponent({
 
 			for(const [level, data] of Object.entries(grades.grades)){
 				for(const [grade, amount] of Object.entries(data)){
-					totals[level] += gradeWorth(grade) * amount;
+					totals[level] += gradeWorth(grade as Grade) * amount;
 				}
 			}
 
