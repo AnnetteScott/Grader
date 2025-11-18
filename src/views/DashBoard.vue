@@ -54,6 +54,10 @@ export default defineComponent({
 				}
 				index++;
 			}
+
+			if(this.currentSem == -1){
+				this.currentSem = firebase.dataBase.semesters.length - 1
+			}
 		},
 		load(){
 			this.breakNum = -2;
